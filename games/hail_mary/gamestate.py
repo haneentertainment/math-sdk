@@ -34,16 +34,41 @@ class GameState(GameStateOverride):
     ]
 
     MULTIPLIERS = {
-        "SACKED": 0,
-        "INCOMPLETE": 0,
-        "INTERCEPTION": 0,
-        "FUMBLE": 0,
-        "SHORT_GAIN": 1.5,
-        "MEDIUM_GAIN": 3,
-        "LONG_GAIN": 6,
-        "BIG_PLAY": 12,
-        "BREAKAWAY": 20,
-        "TOUCHDOWN": 30,
+        "DEEP_MID": {
+            "SACKED": 0, "INCOMPLETE": 0, "INTERCEPTION": 0, "FUMBLE": 0.1,
+            "SHORT_GAIN": 0.1, "MEDIUM_GAIN": 0.5, "LONG_GAIN": 2,
+            "BIG_PLAY": 25, "BREAKAWAY": 500, "TOUCHDOWN": 50000,
+        },
+        "DEEP_L": {
+            "SACKED": 0, "INCOMPLETE": 0, "INTERCEPTION": 0, "FUMBLE": 0.1,
+            "SHORT_GAIN": 0.1, "MEDIUM_GAIN": 2, "LONG_GAIN": 10,
+            "BIG_PLAY": 25, "BREAKAWAY": 500, "TOUCHDOWN": 10000,
+        },
+        "DEEP_R": {
+            "SACKED": 0, "INCOMPLETE": 0, "INTERCEPTION": 0, "FUMBLE": 0.1,
+            "SHORT_GAIN": 0.1, "MEDIUM_GAIN": 2, "LONG_GAIN": 10,
+            "BIG_PLAY": 25, "BREAKAWAY": 500, "TOUCHDOWN": 10000,
+        },
+        "SHORT_MID": {
+            "SACKED": 0, "INCOMPLETE": 0, "INTERCEPTION": 0, "FUMBLE": 0.8,
+            "SHORT_GAIN": 0.8, "MEDIUM_GAIN": 1.5, "LONG_GAIN": 5,
+            "BIG_PLAY": 25, "BREAKAWAY": 500, "TOUCHDOWN": 5000,
+        },
+        "SHORT_L": {
+            "SACKED": 0, "INCOMPLETE": 0.2, "INTERCEPTION": 0.2, "FUMBLE": 0.2,
+            "SHORT_GAIN": 2, "MEDIUM_GAIN": 4, "LONG_GAIN": 10,
+            "BIG_PLAY": 25, "BREAKAWAY": 130, "TOUCHDOWN": 1000,
+        },
+        "SHORT_R": {
+            "SACKED": 0, "INCOMPLETE": 0.2, "INTERCEPTION": 0.2, "FUMBLE": 0.2,
+            "SHORT_GAIN": 2, "MEDIUM_GAIN": 4, "LONG_GAIN": 10,
+            "BIG_PLAY": 25, "BREAKAWAY": 130, "TOUCHDOWN": 1000,
+        },
+        "SCRAMBLE": {
+            "SACKED": 0, "INCOMPLETE": 0.5, "INTERCEPTION": 0.5, "FUMBLE": 0.5,
+            "SHORT_GAIN": 1.1, "MEDIUM_GAIN": 2, "LONG_GAIN": 5,
+            "BIG_PLAY": 10, "BREAKAWAY": 40, "TOUCHDOWN": 150,
+        },
     }
 
     YARD_RANGES = {
@@ -151,7 +176,7 @@ class GameState(GameStateOverride):
             valid_outcomes = [o for o in valid_outcomes if o not in ("INCOMPLETE", "INTERCEPTION")]
         index = math.floor(self.rand() * len(valid_outcomes))
         outcome = valid_outcomes[index]
-        return {"outcome": outcome, "multiplier": self.MULTIPLIERS[outcome]}
+        return {"outcome": outcome, "multiplier": self.MULTIPLIERS[zone][outcome]}
 
     def generate_yards(self, outcome):
         min_val, max_val = self.YARD_RANGES[outcome]

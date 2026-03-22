@@ -1,92 +1,170 @@
-"""Template game configuration file, detailing required user-specified inputs."""
-
-from src.config.config import Config
+from src.config.config import Config, BetMode
 from src.config.distributions import Distribution
-from src.config.config import BetMode
 
 
 class GameConfig(Config):
-    """Template configuration class."""
-
     def __init__(self):
         super().__init__()
-        self.game_id = ""
-        self.provider_numer = 0
-        self.working_name = ""
-        self.wincap = 0
-        self.win_type = ""
-        self.rtp = 0
-        self.construct_paths()
-
-        # Game Dimensions
+        self.rtp = 0.96
+        self.game_id = "hail_mary"
+        self.provider_name = "hane-entertainment"
+        self.provider_number = 1 
+        self.game_name = "Hail Mary"
+        self.output_regular_json = True  # if True, outputs .json if compression = False. If False, outputs .jsonl
+        if self.game_id != "hail_mary":
+            self.construct_paths()
+        self.working_name = "hail_mary"
+        
+        # Win information
+        self.min_denomination = 0.1
+        self.wincap = 50000
+        
+        # Game Details
         self.num_reels = 0
-        self.num_rows = [0] * self.num_reels  # Optionally include variable number of rows per reel
-        # Board and Symbol Properties
-        self.paytable = {}
+        self.num_rows = [0] * self.num_reels
+        self.reels = 0
+        self.row = 0
+        self.paytable = {}  # Symbol information assumes ('kind','name') format
 
-        self.include_padding = True
-        self.special_symbols = {"wild": [], "scatter": [], "multiplier": []}
+        # Define special Symbols properties - list all possible symbol states during game-play
+        self.include_padding = False
 
-        self.freespin_triggers = {self.basegame_type: {}, self.freegame_type: {}}
-        self.anticipation_triggers = {self.basegame_type: 0, self.freegame_type: 0}
-        # Reels
-        reels = {"BR0": "BR0.csv", "FR0": "FR0.csv"}
-        self.reels = {}
-        for r, f in reels.items():
-            self.reels[r] = self.read_reels_csv(str.join("/", [self.reels_path, f]))
-
+        # Static game files
         self.bet_modes = [
             BetMode(
-                name="base",
-                cost=1.0,
-                rtp=self.rtp,
-                max_win=self.wincap,
-                auto_close_disabled=False,
-                is_feature=True,
-                is_buybonus=False,
-                distributions=[
+                name = "DEEP_L",
+                cost = 1.0,
+                rtp = self.rtp,
+                max_win = 10000,
+                auto_close_disabled = False,
+                is_feature = True,
+                is_buybonus = False,
+                distributions = [
                     Distribution(
-                        criteria="wincap",
-                        quota=0.001,
-                        win_criteria=self.wincap,
-                        conditions={
-                            "reel_weights": {
-                                self.basegame_type: {"BR0": 1},
-                                self.freegame_type: {"FR0": 1},
-                            },
-                            "scatter_triggers": {},
-                            "force_wincap": True,
-                            "force_freegame": True,
-                        },
-                    ),
-                    Distribution(
-                        criteria="freegame",
-                        quota=0.1,
-                        conditions={
-                            "reel_weights": {
-                                self.basegame_type: {"BR0": 1},
-                                self.freegame_type: {"FR0": 1},
-                            },
-                            "scatter_triggers": {},
-                            "force_wincap": False,
-                            "force_freegame": True,
-                        },
-                    ),
-                    Distribution(
-                        criteria="0",
-                        quota=0.4,
-                        win_criteria=0.0,
-                        conditions={
-                            "reel_weights": {self.basegame_type: {"BR0": 1}},
+                        criteria = "basegame",
+                        quota = 1,
+                        conditions = {
+                            "reel_weights": {},
                             "force_wincap": False,
                             "force_freegame": False,
                         },
                     ),
+                ],
+            ),
+            BetMode(
+                name = "DEEP_MID",
+                cost = 1.0,
+                rtp = self.rtp,
+                max_win = self.wincap,
+                auto_close_disabled = False,
+                is_feature = True,
+                is_buybonus = False,
+                distributions = [
                     Distribution(
-                        criteria="basegame",
-                        quota=0.5,
-                        conditions={
-                            "reel_weights": {self.basegame_type: {"BR0": 1}},
+                        criteria = "basegame",
+                        quota = 1,
+                        conditions = {
+                            "reel_weights": {},
+                            "force_wincap": False,
+                            "force_freegame": False,
+                        },
+                    ),
+                ],
+            ),
+            BetMode(
+                name = "DEEP_R",
+                cost = 1.0,
+                rtp = self.rtp,
+                max_win = 10000,
+                auto_close_disabled = False,
+                is_feature = True,
+                is_buybonus = False,
+                distributions = [
+                    Distribution(
+                        criteria = "basegame",
+                        quota = 1,
+                        conditions = {
+                            "reel_weights": {},
+                            "force_wincap": False,
+                            "force_freegame": False,
+                        },
+                    ),
+                ],
+            ),
+            BetMode(
+                name = "SHORT_L",
+                cost = 1.0,
+                rtp = self.rtp,
+                max_win = 1000,
+                auto_close_disabled = False,
+                is_feature = True,
+                is_buybonus = False,
+                distributions = [
+                    Distribution(
+                        criteria = "basegame",
+                        quota = 1,
+                        conditions = {
+                            "reel_weights": {},
+                            "force_wincap": False,
+                            "force_freegame": False,
+                        },
+                    ),
+                ],
+            ),
+            BetMode(
+                name = "SHORT_MID",
+                cost = 1.0,
+                rtp = self.rtp,
+                max_win = 5000,
+                auto_close_disabled = False,
+                is_feature = True,
+                is_buybonus = False,
+                distributions = [
+                    Distribution(
+                        criteria = "basegame",
+                        quota = 1,
+                        conditions = {
+                            "reel_weights": {},
+                            "force_wincap": False,
+                            "force_freegame": False,
+                        },
+                    ),
+                ],
+            ),
+            BetMode(
+                name = "SHORT_R",
+                cost = 1.0,
+                rtp = self.rtp,
+                max_win = 1000,
+                auto_close_disabled = False,
+                is_feature = True,
+                is_buybonus = False,
+                distributions = [
+                    Distribution(
+                        criteria = "basegame",
+                        quota = 1,
+                        conditions = {
+                            "reel_weights": {},
+                            "force_wincap": False,
+                            "force_freegame": False,
+                        },
+                    ),
+                ],
+            ),
+            BetMode(
+                name = "SCRAMBLE",
+                cost = 1.0,
+                rtp = self.rtp,
+                max_win = 150,
+                auto_close_disabled = False,
+                is_feature = True,
+                is_buybonus = False,
+                distributions = [
+                    Distribution(
+                        criteria = "basegame",
+                        quota = 1,
+                        conditions = {
+                            "reel_weights": {},
                             "force_wincap": False,
                             "force_freegame": False,
                         },
