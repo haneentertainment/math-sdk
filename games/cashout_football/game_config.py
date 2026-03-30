@@ -6,14 +6,14 @@ class GameConfig(Config):
     def __init__(self):
         super().__init__()
         self.rtp = 0.96
-        self.game_id = "hail_mary"
+        self.game_id = "cashout_football"
         self.provider_name = "hane-entertainment"
         self.provider_number = 1 
-        self.game_name = "Hail Mary"
+        self.game_name = "Cashout Football"
         self.output_regular_json = True  # if True, outputs .json if compression = False. If False, outputs .jsonl
-        if self.game_id != "hail_mary":
+        if self.game_id != "cashout_football":
             self.construct_paths()
-        self.working_name = "hail_mary"
+        self.working_name = "cashout_football"
         
         # Win information
         self.min_denomination = 0.1
